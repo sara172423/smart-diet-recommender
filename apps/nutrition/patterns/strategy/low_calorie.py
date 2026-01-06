@@ -1,7 +1,5 @@
 from .base import RecommendationStrategy
-from ...repositories.food_repository import FoodRepository
 
 class LowCalorieStrategy(RecommendationStrategy):
-
-    def recommend(self, user):
-        return FoodRepository.get_low_calorie_foods()
+    def recommend(self, user, foods):
+        return sorted(foods, key=lambda f: f.calories)[:3]

@@ -1,3 +1,3 @@
-from .user import User
+from .user import SimpleUser
 from .food import Food
-from .reservation import Reservation
+from .reservation import FoodReservation

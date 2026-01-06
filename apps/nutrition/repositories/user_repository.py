@@ -1,9 +1,11 @@
-from ..models.user import User
+from ..models import SimpleUser
 
 class UserRepository:
 
-    def get_by_id(self, user_id):
-        return User.objects.filter(id=user_id).first()
+    @staticmethod
+    def get_by_id(user_id):
+        return SimpleUser.objects.get(id=user_id)
 
-    def create(self, **data):
-        return User.objects.create(**data)
+    @staticmethod
+    def create(**kwargs):
+        return SimpleUser.objects.create(**kwargs)

@@ -1,37 +1,18 @@
-# nutrition/views/food_views.py
-
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
+from django.shortcuts import render, get_object_or_404, redirect
+from ..models import SimpleUser
 from ..services.recommendation_service import RecommendationService
-from ..patterns.strategy.low_calorie import LowCalorieStrategy
-from ..patterns.strategy.economic import EconomicStrategy
-from ..patterns.strategy.high_protein import HighProteinStrategy
-from ..repositories.user_repository import UserRepository
-class RecommendFoodAPIView(APIView):
-    def get(self, request, user_id):
-        user = UserRepository.get_by_id(user_id)
+from ..services.strategy_factory import StrategyFactory
 
-        strategy_type = request.query_params.get("type", "low_calorie")
 
-        if strategy_type == "high_protein":
-            strategy = HighProteinStrategy()
-        elif strategy_type == "economic":
-            strategy = EconomicStrategy()
-        else:
-            strategy = LowCalorieStrategy()
+def recommend_food_view(request, user_id):
+    user = get_object_or_404(SimpleUser, id=user_id)
 
-        service = RecommendationService(strategy)
-        foods = service.recommend_food(user)
+    strategy = StrategyFactory.get_strategy(user)
+    service = RecommendationService(strategy)
 
-        data = [
-            {
-                "id": food.id,
-                "name": food.name,
-                "calories": food.calories,
-                "price": food.price,
-            }
-            for food in foods
-        ]
+    foods = service.recommend_food(user)
 
-        return Response(data, status=status.HTTP_200_OK)
+    return render(request, 'recommendation.html', {
+        'user': user,
+        'foods': foods
+    })

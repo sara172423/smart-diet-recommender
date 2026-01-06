@@ -1,7 +1,5 @@
 from .base import RecommendationStrategy
-from ...repositories.food_repository import FoodRepository
 
 class EconomicStrategy(RecommendationStrategy):
-
-    def recommend(self, user):
-        return FoodRepository.get_economic_foods()
+    def recommend(self, user, foods):
+        return sorted(foods, key=lambda f: f.price)[:3]

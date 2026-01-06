@@ -1,22 +1,16 @@
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
+from django.shortcuts import redirect
+from ..models.reservation import FoodReservation
+from ..models.food import Food
+from ..models.user import SimpleUser
 
-from ..services.reservation_service import ReservationService
 
+def reserve_food_view(request, user_id, food_id):
+    user = SimpleUser.objects.get(id=user_id)
+    food = Food.objects.get(id=food_id)
 
-class ReservationAPIView(APIView):
-    def post(self, request):
-        user_id = request.data.get("user_id")
-        food_id = request.data.get("food_id")
+    FoodReservation.objects.create(
+        user=user,
+        food=food
+    )
 
-        service = ReservationService()
-        reservation = service.reserve_food(user_id, food_id)
-
-        return Response(
-            {
-                "reservation_id": reservation.id,
-                "status": "reserved"
-            },
-            status=status.HTTP_201_CREATED
-        )
+    return redirect(f'/recommend/{user_id}/')

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+<meta charset="UTF-8">
+<title>پیشنهاد غذا</title>
+<style>
+    body {
+        font-family: "Tahoma", sans-serif;
+        background: linear-gradient(120deg, #f0f4f8, #d9e2ec);
+        margin: 0;
+        padding: 20px;
+        direction: rtl;
+    }
+
+    h2 {
+        text-align: center;
+        color: #2c3e50;
+        font-size: 28px;
+        margin-bottom: 30px;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+    }
+
+    .message {
+        text-align: center;
+        color: #27ae60;
+        font-weight: bold;
+        margin-bottom: 25px;
+        font-size: 18px;
+    }
+
+    .food-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        justify-content: center;
+        list-style: none;
+        padding: 0;
+    }
+
+    .food-item {
+        background-color: #fff;
+        border-radius: 15px;
+        box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+        padding: 20px;
+        width: 250px;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .food-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+    }
+
+    .food-item h3 {
+        margin: 0 0 10px 0;
+        color: #34495e;
+        font-size: 20px;
+    }
+
+    .food-info {
+        font-size: 14px;
+        color: #7f8c8d;
+        margin-bottom: 15px;
+    }
+
+    .food-info span {
+        display: block;
+        margin: 3px 0;
+    }
+
+    .reserve-btn {
+        display: block;
+        width: 100%;
+        padding: 10px 0;
+        background-color: #e67e22;
+        color: white;
+        border: none;
+        border-radius: 10px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+
+    .reserve-btn:hover {
+        background-color: #d35400;
+    }
+
+</style>
+</head>
+<body>
+
+<h2>پیشنهاد غذا برای {{ user.first_name }} {{ user.last_name }}</h2>
+
+{% if message %}
+  <p class="message">{{ message }}</p>
+{% endif %}
+
+<ul class="food-list">
+{% for food in foods %}
+  <li class="food-item">
+    <h3>{{ food.name }}</h3>
+    <div class="food-info">
+        <span>کالری: {{ food.calorie }}</span>
+        <span>پروتئین: {{ food.protein }}</span>
+        <span>قیمت: {{ food.price }}</span>
+    </div>
+    <form method="post" action="{% url 'reserve_food' user.id food.id %}">
+        {% csrf_token %}
+        <button type="submit" class="reserve-btn">رزرو</button>
+    </form>
+  </li>
+{% endfor %}
+</ul>
+
+</body>
+</html>

@@ -1,22 +1,6 @@
-from ..models.reservation import Reservation
-from ..patterns.observer.subject import Subject
+from ..models import FoodReservation
 
+class ReservationService:
 
-class ReservationService(Subject):
-    def __init__(self):
-        super().__init__()
-
-    def reserve_food(self, user, food):
-        reservation = Reservation.objects.create(
-            user=user,
-            food=food
-        )
-
-        # Observer Pattern
-        self.notify_observers(
-            event="food_reserved",
-            user=user,
-            food=food
-        )
-
-        return reservation
+    def reserve(self, user, food):
+        return FoodReservation.objects.create(user=user, food=food)
